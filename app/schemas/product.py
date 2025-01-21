@@ -1,7 +1,7 @@
 """Модуль схем product."""
 from typing import Optional
 
-from pydantic import BaseModel, PositiveInt, PositiveFloat, Field
+from pydantic import BaseModel
 
 
 class ProductBase(BaseModel):
@@ -10,17 +10,18 @@ class ProductBase(BaseModel):
 
 class ProductDB(ProductBase):
     """Класс схемы."""
-    name: str 
+    name: str
     article: str
     descr: Optional[str] | None = None
     brand: Optional[str] | None = None
-    price: Optional[PositiveFloat] = 0
-    sale_price: Optional[PositiveFloat] = 0
-    raiting: Optional[PositiveFloat] = 0
-    total_quantity: Optional[PositiveInt] = 0 
-    
+    price: Optional[float] = 0
+    sale_price: Optional[float] = 0
+    rating: Optional[float] = 0
+    total_quantity: Optional[int] = 0
+
     class Config:
         from_attributes = True
+
 
 class ProductCreate(ProductBase):
     ...

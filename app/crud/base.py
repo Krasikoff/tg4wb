@@ -1,11 +1,8 @@
 """Базовый CRUD"""
-from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.models import User
 
 
 class CRUDBase:
@@ -37,8 +34,11 @@ class CRUDBase:
             obj_in,
             session: AsyncSession,
     ):
-        obj_in_data = obj_in.dict()
-        db_obj = self.model(**obj_in_data)
+        if type(obj_in) is not dict:
+            obj_in_data = obj_in.dict()
+            db_obj = self.model(**obj_in_data)
+        else:
+            db_obj = self.model(**obj_in)
         session.add(db_obj)
         await session.commit()
         await session.refresh(db_obj)
