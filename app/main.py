@@ -1,11 +1,35 @@
 """Основной модуль приложения."""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from contextlib import asynccontextmanager
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+from app.scheduler.scheduler import upd_data_to_db
 from app.api.router import main_router
 from app.core.config import settings
 
-app = FastAPI(title=settings.app_title)
+
+scheduler = AsyncIOScheduler(timezone='UTC')
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        scheduler.add_job(
+            upd_data_to_db,
+            trigger=IntervalTrigger(minutes=2),
+            id='currency_update_job',
+            replace_existing=True
+        )
+        scheduler.start()
+        print("Планировщик запущен")
+        yield
+    except Exception as e:
+        print(f"Ошибка инициализации планировщика: {e}")
+    finally:
+        scheduler.shutdown()
+        print("Планировщик обновления курсов валют остановлен")
+
+app = FastAPI(lifespan=lifespan, title=settings.app_title)
 
 origins = [
     "http://localhost",

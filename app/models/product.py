@@ -1,5 +1,6 @@
 """Модуль модели."""
-from sqlalchemy import Column, Integer, String, Text, Float
+from sqlalchemy import Column, Integer, String, Text, Float, Boolean
+from sqlalchemy.orm import relationship
 from app.core.db import Base
 
 
@@ -13,6 +14,7 @@ class Product(Base):
     sale_price = Column(Float, default=0)
     rating = Column(Float, default=0)
     total_quantity = Column(Integer, default=0)
+    subscribe = Column(Boolean, default=False)
 
     def __str__(self):
         return f'#{self.id} : {self.name} - {self.sale_price}'

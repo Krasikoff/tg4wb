@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 import requests
 
 
@@ -29,4 +30,8 @@ async def get_json_from_card_wb(article: str):
         return updated_json
     except Exception as e:
         print(e)
-        return None
+        raise HTTPException(
+            status_code=422,
+            detail='Продукт не может иметь значение None.'
+            )
+
