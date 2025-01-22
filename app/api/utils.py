@@ -33,5 +33,18 @@ async def get_json_from_card_wb(article: str):
         raise HTTPException(
             status_code=422,
             detail='Продукт не может иметь значение None.'
-            )
+        )
 
+
+async def put_json_to_product(article: str):
+    url = ('http://localhost:8000/products/')
+    try:
+        res = requests.post(url=url, json={'article': article}, timeout=2)
+        print(res.text)
+    except Exception as e:
+        print(e)
+        return None
+        # raise HTTPException(
+        #     status_code=422,
+        #     detail='Не может иметь значение None.'
+        # )

@@ -11,12 +11,13 @@ from app.core.config import settings
 
 scheduler = AsyncIOScheduler(timezone='UTC')
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
         scheduler.add_job(
             upd_data_to_db,
-            trigger=IntervalTrigger(minutes=2),
+            trigger=IntervalTrigger(minutes=1),
             id='currency_update_job',
             replace_existing=True
         )
@@ -27,7 +28,7 @@ async def lifespan(app: FastAPI):
         print(f"Ошибка инициализации планировщика: {e}")
     finally:
         scheduler.shutdown()
-        print("Планировщик обновления курсов валют остановлен")
+        print("Планировщик остановлен")
 
 app = FastAPI(lifespan=lifespan, title=settings.app_title)
 
