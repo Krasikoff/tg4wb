@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     postgres_port: str = '5432'
     pgdata: str = '/var/lib/postgresql/data/pgdata'
     secret: str = 'SECRET'
+    telegram_bot_token: str = '0000000000:El55gRI4rikAAHUdelfhmd......'
+    webhook_host: str = 'https://unevenly-seasoned-cat.cloudpub.ru/'
 
     class Config:
         """Класс конфигурации класса настроек."""

@@ -1,11 +1,11 @@
 """Модуль модели."""
-from sqlalchemy import Column, Integer, String, Text, Float, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Column, Float, Integer, String, Text
+
 from app.core.db import Base
 
 
 class Product(Base):
-    """Класс модели."""
+    """Класс модели базовый."""
     name = Column(String(100), nullable=False)
     article = Column(Integer, nullable=False, unique=True)
     descr = Column(Text())

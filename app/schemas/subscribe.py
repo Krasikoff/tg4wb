@@ -2,9 +2,8 @@
 from .product import ProductDB
 
 
-
 class SubscribeBase(ProductDB):
-    """Класс схемы."""    
+    """Класс схемы."""
     pass
 
     class Config:

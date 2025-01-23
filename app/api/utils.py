@@ -1,5 +1,8 @@
-from fastapi import HTTPException
+import logging
+
+import aiohttp
 import requests
+from fastapi import HTTPException
 
 
 async def get_json_from_card_wb(article: str):
@@ -7,8 +10,7 @@ async def get_json_from_card_wb(article: str):
         'https://card.wb.ru/cards/v1/detail?appType=1&curr=rub&dest=-1257786'
         f'&spp=30&nm={article}'
     )
-    print(url)
-    json_data = requests.get(url).json()   # 211695539
+    json_data = requests.get(url).json()
     try:
         original_json = json_data['data']['products'][0]
         key_mapping = {
@@ -23,9 +25,12 @@ async def get_json_from_card_wb(article: str):
         }
         updated_json = {
             key_mapping.get(
-                key, key): value for key, value in original_json.items()
-                if key in ['name', 'id', 'descr', 'brand', 'priceU',
-                           'salePriceU', 'rating', 'totalQuantity']
+                key, key
+            ): value for key, value in original_json.items(
+            ) if key in [
+                'name', 'id', 'descr', 'brand', 'priceU',
+                'salePriceU', 'rating', 'totalQuantity'
+            ]
         }
         return updated_json
     except Exception as e:
@@ -37,14 +42,18 @@ async def get_json_from_card_wb(article: str):
 
 
 async def put_json_to_product(article: str):
+    "Обращение к нашему api для получения данных по товару."
     url = ('http://localhost:8000/products/')
-    try:
-        res = requests.post(url=url, json={'article': article}, timeout=2)
-        print(res.text)
-    except Exception as e:
-        print(e)
-        return None
-        # raise HTTPException(
-        #     status_code=422,
-        #     detail='Не может иметь значение None.'
-        # )
+    data = {"article": article}
+    async with aiohttp.ClientSession() as session:
+        response = await session.post(url, json=data)
+        json_data = await response.json()
+        try:
+            logging(json_data['article'])
+        except KeyError:
+            logging(json_data['detail'])
+        except Exception as e:
+            logging(e)
+        finally:
+            logging(json_data)
+            return json_data

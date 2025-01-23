@@ -1,7 +1,8 @@
+from sqlalchemy import select
+
+from app.core.db import AsyncSessionLocal
 from app.crud.base import CRUDBase
 from app.models import Product
-from sqlalchemy import select
-from app.core.db import AsyncSessionLocal
 
 
 class CRUDProduct(CRUDBase):

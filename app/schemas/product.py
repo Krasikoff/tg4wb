@@ -1,10 +1,12 @@
 """Модуль схем product."""
+import logging
 from typing import Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, field_validator
 
 
 class ProductBase(BaseModel):
+    """Класс схемы базовый."""
     article: int
 
 
@@ -25,16 +27,17 @@ class ProductDB(ProductBase):
 
 
 class ProductCreate(ProductBase):
-    
+    """Валидация значения артикля при создании."""
     @field_validator('article')
     def article_cannt_be_negative(cls, value: str):
         try:
             if 2147483648 < int(value) or int(value) <= 0:
                 raise ValueError('Значение article не правильное.')
             return int(value)
-        except (ValueError, TypeError) as e:
-            raise ValueError('Значение "article" не может быть отрицательным, 0 и больше 2147483648.')            
-
-
-
-    
+        except (ValueError, TypeError):
+            raise ValueError(
+                'Значение "article" не может быть отрицательным, 0 '
+                'и больше 2147483648.'
+            )
+        except Exception as e:
+            logging(e)
