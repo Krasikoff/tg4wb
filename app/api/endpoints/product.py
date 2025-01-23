@@ -6,6 +6,8 @@ from app.api.validators import check_article_duplicate
 from app.core.db import get_async_session
 from app.crud.product import product_crud
 from app.schemas.product import ProductCreate, ProductDB
+from app.models import User
+from app.core.user import current_user
 
 router = APIRouter()
 
@@ -18,6 +20,7 @@ router = APIRouter()
 async def create_new_product(
         product: ProductCreate,
         session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(current_user),
 ):
     """Запись полученного по артиклю с wb товара."""
     product_dict = await get_json_from_card_wb(product.article)
@@ -38,7 +41,8 @@ async def create_new_product(
     response_model_exclude_none=True,
 )
 async def get_all_products(
-        session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_user),
 ):
     "Все записанные товары."
     all_tasks = await product_crud.get_multi(

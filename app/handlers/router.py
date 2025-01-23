@@ -6,7 +6,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import (CallbackQuery, InlineKeyboardButton,
                            InlineKeyboardMarkup, Message)
 
-from app.api.utils import get_json_from_card_wb, put_json_to_product
+from app.api.utils import get_json_from_card_wb
 
 router = Router()
 

@@ -45,7 +45,8 @@ async def put_json_to_product(article: str):
     "Обращение к нашему api для получения данных по товару."
     url = ('http://localhost:8000/products/')
     data = {"article": article}
-    async with aiohttp.ClientSession() as session:
+    auth = aiohttp.BasicAuth(login='z1r0-d@yandex.ru', password='111')
+    async with aiohttp.ClientSession(auth=auth) as session:
         response = await session.post(url, json=data)
         json_data = await response.json()
         try:
