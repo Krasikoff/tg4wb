@@ -49,11 +49,11 @@ async def put_json_to_product(article: str):
         response = await session.post(url, json=data)
         json_data = await response.json()
         try:
-            logging(json_data['article'])
+            logging.info(json_data['article'])
         except KeyError:
-            logging(json_data['detail'])
+            logging.info(json_data['detail'])
         except Exception as e:
-            logging(e)
+            logging.info(e)
         finally:
-            logging(json_data)
+            logging.info(json_data)
             return json_data

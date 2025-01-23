@@ -40,4 +40,4 @@ class ProductCreate(ProductBase):
                 'и больше 2147483648.'
             )
         except Exception as e:
-            logging(e)
+            logging.info(e)

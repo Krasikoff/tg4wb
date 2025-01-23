@@ -42,19 +42,6 @@ dp.include_router(bot_router)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        await bot.set_webhook(
-            url=webhook_url,
-            allowed_updates=dp.resolve_used_update_types(),
-            drop_pending_updates=True,
-        )
-        logging('URL = %s', webhook_url)
-    except Exception as e:
-        logging('Cannot set webhook - %s', e)
-    yield
-    await bot.delete_webhook()
-    logging('Stopping application')
-
-    try:
         scheduler.start()
         scheduler.add_job(
             upd_data_to_db,
@@ -62,18 +49,28 @@ async def lifespan(app: FastAPI):
             id='update_job',
             replace_existing=True
         )
-        logging("Планировщик запущен")
+        logging.info("Планировщик запущен")
         yield
     except Exception as e:
-        logging(f"Ошибка инициализации планировщика: {e}")
+        logging.info(f"Ошибка инициализации планировщика: {e}")
     finally:
         scheduler.shutdown()
-        logging("Планировщик остановлен")
+        logging.info("Планировщик остановлен")
+    
+    await bot.set_webhook(
+        url=webhook_url,
+        allowed_updates=dp.resolve_used_update_types(),
+        drop_pending_updates=True,
+    )
+    logging.info('Старт бот. URL = %s', webhook_url)
+    yield
+    await bot.delete_webhook()
+    logging.info('Stopping application. Удаляем webhook.')
 
 
 app = FastAPI(
     lifespan=lifespan,
-    title=settings.app_title
+    title=settings.app_title,
 )
 
 

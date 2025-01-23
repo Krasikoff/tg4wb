@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,7 +20,7 @@ async def get_start_subscribe(
 ):
     product_dict = await put_json_to_product(product_article)
     try:
-        print(product_dict['article'])
+        logging.info(product_dict['article'])
         product = await product_crud.get_by_attribute(
             'article', product_article, session
         )

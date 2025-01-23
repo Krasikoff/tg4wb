@@ -6,7 +6,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import (CallbackQuery, InlineKeyboardButton,
                            InlineKeyboardMarkup, Message)
 
-from app.api.utils import get_json_from_card_wb
+from app.api.utils import get_json_from_card_wb, put_json_to_product
 
 router = Router()
 
@@ -56,25 +56,30 @@ async def send_echo(
     message: Message,
 ) -> None:
     """Если цифры - артикул, отрабатываем, нет - HELP."""
-    try:
-        product_dict = await get_json_from_card_wb(message.text)
-        if message.text.isdigit():
+    if message.text.isdigit():
+        try:
+            product_dict = await get_json_from_card_wb(message.text)
+            try:
+                product_str = str(product_dict)
+            except KeyError:
+                product_str = (
+                    f'{product_dict["detail"]}'
+                    f'Не удалось получить данные по товару с этим артикулем: {message.text}')
             await message.answer(
-                text=str(product_dict),
+                text=product_str,
                 reply_markup=None,
             )
-        else:
-            await message.reply(
-                f'На данный момент я не поддерживаю команду {message.text}'
-                f'🤷\n\nМогу предложить вам обратиться по email user@pochta.com'
-                'с предложением по улучшению бота или воспользоваться'
-                ' /help',
+        except Exception as e:
+            logging.info('AiogramError ======= %s', e)
+            await message.answer(
+                'Произошла ошибка при обработке вашего запроса. '
+                'Пожалуйста, попробуйте снова позже.'
             )
-    except AiogramError as e:
-        logging.info('AiogramError ======= %s', e)
-        await message.answer(
-            'Произошла ошибка при обработке вашего запроса. '
-            'Пожалуйста, попробуйте снова позже.'
+    else:
+        await message.reply(
+            f'На данный момент я не поддерживаю команду {message.text}'
+            f'🤷\n\nМогу предложить вам обратиться по email user@pochta.com '
+            'с предложением по улучшению бота или воспользоваться'
+            ' /help',
         )
-    finally:
-        await cmd_start(message)
+    await cmd_start(message)
