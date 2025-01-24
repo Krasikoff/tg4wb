@@ -56,7 +56,7 @@ async def lifespan(app: FastAPI):
     finally:
         scheduler.shutdown()
         logging.info("Планировщик остановлен")
-    
+
     await bot.set_webhook(
         url=webhook_url,
         allowed_updates=dp.resolve_used_update_types(),
