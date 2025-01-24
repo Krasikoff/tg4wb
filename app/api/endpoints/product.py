@@ -4,10 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.utils import get_json_from_card_wb
 from app.api.validators import check_article_duplicate
 from app.core.db import get_async_session
-from app.crud.product import product_crud
-from app.schemas.product import ProductCreate, ProductDB
-from app.models import User
 from app.core.user import current_user
+from app.crud.product import product_crud
+from app.models import User
+from app.schemas.product import ProductCreate, ProductDB
 
 router = APIRouter()
 
@@ -26,10 +26,9 @@ async def create_new_product(
     product_dict = await get_json_from_card_wb(product.article)
     duplicate = await check_article_duplicate(product.article, session)
     if duplicate:
-        product = await product_crud.get_by_attribute(
-            'article', product.article, session
+        new_product = await product_crud.update(
+            duplicate, product_dict, session
         )
-        new_product = await product_crud.update(product, product_dict, session)
     else:
         new_product = await product_crud.create(product_dict, session)
     return new_product

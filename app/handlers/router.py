@@ -64,7 +64,9 @@ async def send_echo(
             except KeyError:
                 product_str = (
                     f'{product_dict["detail"]}'
-                    f'Не удалось получить данные по товару с этим артикулем: {message.text}')
+                    f'Не удалось получить данные по товару с этим артикулом:'
+                    f' {message.text}'
+                )
             await message.answer(
                 text=product_str,
                 reply_markup=None,

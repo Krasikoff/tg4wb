@@ -8,12 +8,10 @@ async def check_article_duplicate(
         product_article: str,
         session: AsyncSession,
 ) -> bool:
-    product_id = await product_crud.get_by_attribute(
+    product = await product_crud.get_by_attribute(
         'article', product_article, session
     )
-    if product_id is None:
-        return False
-    return True
+    return product
 
 
 async def article_cannt_be_negative(article: str) -> int | None:

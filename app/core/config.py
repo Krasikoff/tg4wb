@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     secret: str = 'SECRET'
     telegram_bot_token: str = '0000000000:El55gRI4rikAAHUdelfhmd......'
     webhook_host: str = 'https://unevenly-seasoned-cat.cloudpub.ru/'
+    first_superuser_email: str = 'user@domain.com'
+    first_superuser_password: str = 'XXX'
 
     class Config:
         """Класс конфигурации класса настроек."""
